@@ -121,10 +121,11 @@ class Toc
   __createList: () ->
     list = []
     indicesOfDepth = Array.apply(null, new Array(6)).map(Number.prototype.valueOf, 0);
+    minDepth = @list[..].sort((a,b)-> a.depth-b.depth)[0].depth
     for own i, item of @list
       row = []
 
-      for tab in [1..item.depth] when tab > 1
+      for tab in [1..item.depth] when tab > minDepth
         row.push "\t"
       if @options.orderedList is 1
         row.push ++indicesOfDepth[item.depth-1] + ". "
@@ -188,8 +189,9 @@ class Toc
   # create hash and surround link withit
   ___createLink: (name) ->
     hash = new String name
-    hash = hash.toLowerCase().replace /\s/g, "-"
-    hash = hash.replace /[^a-z0-9\-]/g, ""
+    #hash = hash.toLowerCase().replace /\s/g, "-"
+    #hash = hash.replace /[^a-z0-9\-]/g, ""
+    hash = hash.replace /\s/g, "-"
     if hash.indexOf("--") > -1
       hash = hash.replace /(-)+/g, "-"
     if name.indexOf(":-") > -1
