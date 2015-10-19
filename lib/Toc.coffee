@@ -1,7 +1,7 @@
 module.exports =
 class Toc
 
-
+  editor: null
   constructor: (@editor) ->
     @lines = []
     @list = []
@@ -13,7 +13,7 @@ class Toc
     @create()
 
     at = @
-    @editor.getBuffer().onWillSave () ->
+    @editor?.getBuffer().onWillSave () ->
       if at.options.updateOnSave is 1
         if at._hasToc()
           at._deleteToc()
@@ -52,9 +52,13 @@ class Toc
 
 
   # ----------------------------------------------------------------------------
-
+  _getActiveEditor : ->
+    atom.workspace.getActiveTextEditor()
 
   _hasToc: () ->
+    # first update @editor
+    @editor = @_getActiveEditor()
+    
     @___updateLines()
 
     if @lines.length > 0
